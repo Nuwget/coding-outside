@@ -6,6 +6,8 @@ import {
   Limits,
   DeskMode,
   Permission,
+  validateEnvelope,
+  PROTOCOL_VERSION,
 } from "@coding-outside/protocol";
 
 const TOOL_ICONS: Record<Tool, string> = {
@@ -29,6 +31,7 @@ const TOOL_COLORS: Record<Tool, string> = {
 export const MOCK_SESSIONS: Session[] = [
   {
     id: "11111111-1111-1111-1111-111111111111",
+    rev: 1,
     tool: "claude-code",
     status: "working",
     cwd: "/home/nuwget/projects/loja",
@@ -42,6 +45,7 @@ export const MOCK_SESSIONS: Session[] = [
   },
   {
     id: "22222222-2222-2222-2222-222222222222",
+    rev: 3,
     tool: "codex",
     status: "needs_you",
     cwd: "/home/nuwget/projects/budu-crush",
@@ -63,6 +67,7 @@ export const MOCK_SESSIONS: Session[] = [
   },
   {
     id: "33333333-3333-3333-3333-333333333333",
+    rev: 2,
     tool: "opencode",
     status: "idle",
     cwd: "/home/nuwget/Documents/projects/coding-outside",
@@ -76,6 +81,7 @@ export const MOCK_SESSIONS: Session[] = [
   },
   {
     id: "44444444-4444-4444-4444-444444444444",
+    rev: 5,
     tool: "gemini-cli",
     status: "done",
     cwd: "/home/nuwget/projects/open-part",
@@ -89,6 +95,7 @@ export const MOCK_SESSIONS: Session[] = [
   },
   {
     id: "55555555-5555-5555-5555-555555555555",
+    rev: 1,
     tool: "cursor-agent",
     status: "error",
     cwd: "/home/nuwget/projects/welcome-to-your-past",
@@ -162,5 +169,25 @@ export const useDeskStore = create<DeskState>((set) => ({
           },
     })),
 }));
+
+export const MOCK_DEVICE_HELLO = {
+  v: PROTOCOL_VERSION,
+  type: "hello" as const,
+  deviceId: "desk-sim-0000-0000-0000-000000000001",
+  clientKind: "desk-sim" as const,
+  protocolV: PROTOCOL_VERSION,
+  capabilities: {
+    screenW: 320,
+    screenH: 240,
+    pets: true,
+    apps: true,
+    touch: false,
+  },
+};
+
+/** Valida que um frame recebido do Hub respeita o envelope v1. */
+export function validateMockFrame(unknown: unknown) {
+  return validateEnvelope(unknown);
+}
 
 export { TOOL_ICONS, TOOL_COLORS };
