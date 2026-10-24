@@ -1,0 +1,29 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editores e IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Dependências e builds
+node_modules/
+dist/
+build/
+out/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Relatórios de teste e cobertura
+coverage/
+.coverage
+.nyc_output/
