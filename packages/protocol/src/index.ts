@@ -67,6 +67,7 @@ export type Permission = z.infer<typeof PermissionSchema>;
 
 export const Session = z.object({
   id: z.string().uuid(),
+  rev: z.number().int().nonnegative(),
   tool: ToolSchema,
   status: SessionStatus,
   cwd: z.string(),
