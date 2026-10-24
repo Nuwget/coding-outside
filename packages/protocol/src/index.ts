@@ -48,6 +48,9 @@ export const PetSpecies = z.enum([
 ]);
 export type PetSpecies = z.infer<typeof PetSpecies>;
 
+export const ClientKind = z.enum(["desk", "remote", "desk-sim"]);
+export type ClientKind = z.infer<typeof ClientKind>;
+
 /* ========================================================================
    Modelo de dados
    ======================================================================== */
@@ -106,10 +109,84 @@ export const DeskAppManifest = z.object({
 export type DeskAppManifest = z.infer<typeof DeskAppManifest>;
 
 /* ========================================================================
-   WebSocket — JSON-RPC 2.0 sobre WS
+   WebSocket — envelope com versão de protocolo
    ======================================================================== */
 
-/* --- Hub → Desk/Remote (eventos, sem "id") --- */
+/* Todo frame WS começa com { v: 1, type: "..." }. O type distingue:
+   - "hello"   : cliente se apresenta ao conectar (device.hello)
+   - "rpc"     : cliente → hub (JSON-RPC request)
+   - "event"   : hub → cliente (evento do protocolo)
+   - "error"   : erro JSON-RPC (qualquer direção)
+*/
+
+/* --- Cliente → Hub: device.hello --- */
+
+export const ClientHello = z.object({
+  v: z.literal(1),
+  type: z.literal("hello"),
+  deviceId: z.string().uuid(),
+  clientKind: ClientKind,
+  protocolV: z.literal(1),
+  capabilities: z.object({
+    screenW: z.number().optional(),
+    screenH: z.number().optional(),
+    pets: z.boolean().default(false),
+    apps: z.boolean().default(false),
+    touch: z.boolean().default(false),
+  }),
+});
+export type ClientHello = z.infer<typeof ClientHello>;
+
+/* --- Cliente → Hub: RPC request (tipagem frouxa no wire) --- */
+
+export const ClientRpc = z.object({
+  v: z.literal(1),
+  type: z.literal("rpc"),
+  id: z.string(),
+  method: z.string(),
+  params: z.record(z.string(), z.unknown()),
+});
+export type ClientRpc = z.infer<typeof ClientRpc>;
+
+/* --- Hub → Cliente: evento (tipagem frouxa no wire) --- */
+
+export const ServerEvent = z.object({
+  v: z.literal(1),
+  type: z.literal("event"),
+  event: z.string(),
+  data: z.any(),
+});
+export type ServerEvent = z.infer<typeof ServerEvent>;
+
+/* --- Erro JSON-RPC (qualquer direção) --- */
+
+export const JsonRpcError = z.object({
+  v: z.literal(1),
+  type: z.literal("error"),
+  id: z.string().optional(),
+  error: z.object({
+    code: z.number(),
+    message: z.string(),
+    data: z.unknown().optional(),
+  }),
+});
+export type JsonRpcError = z.infer<typeof JsonRpcError>;
+
+/* --- Frame completo do wire --- */
+
+export const WsFrame = z.discriminatedUnion("type", [
+  ClientHello,
+  ClientRpc,
+  ServerEvent,
+  JsonRpcError,
+]);
+export type WsFrame = z.infer<typeof WsFrame>;
+
+/* ========================================================================
+   Schemas tipados (uso interno do Hub e clientes)
+   ======================================================================== */
+
+/* --- Hub → Cliente: eventos tipados --- */
 
 export const SessionUpsertEvent = z.object({
   event: z.literal("session.upsert"),
@@ -174,7 +251,7 @@ export const HubToClientEvent = z.discriminatedUnion("event", [
 ]);
 export type HubToClientEvent = z.infer<typeof HubToClientEvent>;
 
-/* --- Cliente → Hub (RPC, com "id") --- */
+/* --- Cliente → Hub: requisições RPC tipadas --- */
 
 export const SessionListRequest = z.object({
   id: z.string(),
@@ -235,30 +312,16 @@ export const ClientToHubRequest = z.discriminatedUnion("method", [
 ]);
 export type ClientToHubRequest = z.infer<typeof ClientToHubRequest>;
 
-/* --- Erro JSON-RPC --- */
-
-export const JsonRpcError = z.object({
-  id: z.string().optional(),
-  error: z.object({
-    code: z.number(),
-    message: z.string(),
-    data: z.unknown().optional(),
-  }),
-});
-export type JsonRpcError = z.infer<typeof JsonRpcError>;
-
-/* --- Envelope completo de um frame WS --- */
-
-export const WsFrame = z.discriminatedUnion("event", [
-  ...HubToClientEvent.options,
-] as any);
-/* Nota: requests de cliente possuem "method" (não "event"); validar
-   separadamente com ClientToHubRequest quando houver "method". */
-export type WsFrame = z.infer<typeof WsFrame>;
-
 /* ========================================================================
    Helpers de validação
    ======================================================================== */
+
+export const validateEnvelope = (unknown: unknown) => WsFrame.safeParse(unknown);
+
+export const validateClientHello = (unknown: unknown) =>
+  ClientHello.safeParse(unknown);
+
+export const validateClientRpc = (unknown: unknown) => ClientRpc.safeParse(unknown);
 
 export const validateHubToClient = (unknown: unknown) =>
   HubToClientEvent.safeParse(unknown);
@@ -277,3 +340,4 @@ export const WS_PORT = 8787;
 export const MDNS_SERVICE = "_coding-outside._tcp.local";
 export const PAIRING_CODE_TTL_MIN = 10;
 export const WS_HEARTBEAT_INTERVAL_MS = 15_000;
+export const PROTOCOL_VERSION = 1;
