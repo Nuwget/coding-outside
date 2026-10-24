@@ -21,7 +21,7 @@
 | [`packages/sdk`](./packages/sdk) | SDK para Desk Apps de terceiros, rodando em sandbox WASI | TS → `wasm32-wasi` |
 | [`packages/apps-builtin`](./packages/apps-builtin) | Apps oficiais: bitcoin, clima, agenda, serviços, cpu-ram, planos | TypeScript |
 | [`packages/ui`](./packages/ui) | Design system compartilhado | Tailwind + shadcn/ui |
-| [`firmware/desk`](./firmware/desk) | Firmware da mesaico: telas LVGL, pets, apps | ESP-IDF 5.3 + LVGL 9 |
+| [`firmware/desk`](./firmware/desk) | Firmware do Desk (a mesa): telas LVGL, pets, apps | ESP-IDF 5.3 + LVGL 9 |
 
 Monorepo com **pnpm workspaces + Turborepo**. `pnpm dev` sobe tudo, incluindo o desk-sim conectado ao Hub.
 
@@ -30,12 +30,12 @@ Monorepo com **pnpm workspaces + Turborepo**. `pnpm dev` sobe tudo, incluindo o 
 1. **Interceptação** — cada CLI é integrada sem sobrescrever binários: Claude Code via hooks nativos (`PreToolUse`, `PostToolUse`, `Notification`, `Stop`); Codex via `notify` + wrapper PTY; Gemini/Copilot/Cursor via shims PTY em `~/.coding-outside/bin/`; OpenCode via servidor nativo (SSE).
 2. **IPC local** — os eventos do wrapper vão por Unix socket (`/tmp/coding-outside.sock`) ou named pipe para o Hub, o único processo que fala com o mundo.
 3. **Hub agrega** — status, tokens, custo, limites (5h/semanal) e histórico em SQLite; todo frame que atravessa IPC/WS é validado com Zod.
-4. **Cliente remotos** — Desk e Remote descobrem o Hub por mDNS (`_coding-outside._tcp.local`), pareiam com um código de 6 dígitos e falam WebSocket na porta 8787 com Envelope JSON-RPC 2.0 criptografado ponta a ponta.
+4. **Clientes remotos** — Desk e Remote descobrem o Hub por mDNS (`_coding-outside._tcp.local`), pareiam com um código de 6 dígitos e falam WebSocket na porta 8787 com envelope JSON-RPC 2.0 criptografado ponta a ponta.
 5. **Aprovação remota** — quando uma sessão entra em `needs_you`, o comando aparece na mesa e no celular. Aprovar no celular exige WebAuthn (Face ID/digital/PIN). A resposta volta pelo mesmo caminho até o terminal do agente.
 
 ## Segurança
 
-Criptografia e sandbox são decisões deliberadas, registradas em [ADRs](#decisões-arquiteturais-adr):
+Criptografia e sandbox são decisões deliberadas, registradas em [ADRs](#decisões-arquiteturais-adrs):
 
 - **Pareamento**: código de 6 dígitos (TTL 10 min) → handshake assinado Ed25519 → sessão WS com XChaCha20-Poly1305 (chave derivada do pareamento).
 - **Remote**: aprovação de permissão sempre em duas etapas — desbloqueio ≠ autorização (WebAuthn obrigatório).
@@ -44,15 +44,13 @@ Criptografia e sandbox são decisões deliberadas, registradas em [ADRs](#decis�
 - **OTA**: assinado Ed25519 + código de 4 dígitos exibido na tela (anti-MITM) + rollback em caso de bootloop (>3).
 - **Logs**: nunca logamos comandos ou tokens em nível info. Logs em `~/.coding-outside/logs/`, rotação de 7 dias e redaction de `*_key`, `token`, `authorization`.
 
-## A mesaico
+## O Desk
 
 Hardware alvo: **ESP32-S3-WROOM-1 N16R8** + **ST7789 320×240 SPI**.
 
-Modos de tela (todos reproduzidos primeiro no desk-sim):
+Modos de tela (todos reproduzidos primeiro no desk-sim): `sessions`, `limits`, `focus` (Pomodoro 25/5), `meeting` (só hora + status — nada sensível), `message` (recado), `timer`, `countdown`, `pet`, `app` (widget de Desk App). Os estados críticos tomam a tela: permissão pendente entra em full-screen com botões **Negar/Aprovar** (ou hardware: BOOT curto = negar, longo = aprovar); limites mostram as 2 barras + "planeja estourar em X".
 
-`sessions` · `permission` · `limits` · `focus` (Pomodoro 25/5) · `meeting` (sofrete nothing sensível) · `message` (recado) · `timer` · `countdown` · `pet` · `app` (widget de Desk App)
-
-O modo `pet` é o coração do bicho: 20 mascotes (default capivara), cores customizáveis por parte, acessórios, visitas entre mesas da rede e datas especiais — animado por spritesheet do LittleFS em canvas 16×16 escalado 4×, com shuffle bag de 30 animações.
+O modo `pet` é o coração da mesa: 20 mascotes (padrão: capivara), cores customizáveis por parte, acessórios, visitas entre mesas da rede e datas especiais — animado por spritesheet do LittleFS em canvas 16×16 escalado 4×, com shuffle bag de 30 animações.
 
 ## Ferramentas suportadas
 
@@ -67,7 +65,7 @@ O modo `pet` é o coração do bicho: 20 mascotes (default capivara), cores cust
 
 Testes de parser rodam contra fixtures reais em `packages/cli-wrappers/__fixtures__/`.
 
-## Comecando
+## Começando
 
 Pré-requisitos: Node 20 LTS, pnpm 9, Rust 1.78+, ESP-IDF 5.3 (só para firmware).
 
@@ -104,7 +102,7 @@ idf.py build flash monitor
 
 Antes de qualquer código pesado, `docs/adr/` registra o porquê de:
 
-1. **Tauri vs Electron** — por que o Hub é Tauri 2 e não一颗 Electron.
+1. **Tauri vs Electron** — por que o Hub é Tauri 2 e não um Electron.
 2. **Hooks vs PTY** — por que Claude Code usa hooks nativos e as outras CLIs usam wrapper PTY.
 3. **WASM vs JS no firmware** — por que Desk Apps rodam em sandbox WASI/wasm3.
 4. **XChaCha vs Noise** — por que XChaCha20-Poly1305 no transporte e não um protocolo Noise completo.
@@ -122,8 +120,8 @@ Este repositório segue o guia de engenharia vivo do próprio repo — [`AGENTS.
 
 ## License
 
-Ainda não definido — decisão junto do lançamento. Até lá, o código público é de uso de referência.
+Ainda não definida — decisão junto do lançamento.
 
 ---
 
-*coding-outside* nasceu de "fora" em três sentidos: **fora da caixa** (o problema define a solução), **fora do expediente** (o Dudu programa quando a cidade dorme) e agora **fora da tela do computador** — o monitor vive na mesa, no celular e no bolso do programador que tá fora, do mercado à banca da esquina.
+*coding-outside* carrega o "fora" em três sentidos: **fora da caixa** (o problema define a solução), **fora do expediente** (o código sai quando a cidade dorme) e **fora do computador** — o monitor acompanha o programador na mesa, no celular e fora do escritório.
