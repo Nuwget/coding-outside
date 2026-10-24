@@ -1,0 +1,32 @@
+{
+  "$schema": "https://tauri.app/json/v2/tauri.conf.json",
+  "productName": "Coding Outside Hub",
+  "version": "0.0.1",
+  "identifier": "com.codingoutside.hub",
+  "build": {
+    "frontendDist": "../dist",
+    "beforeDevCommand": "vite",
+    "beforeBuildCommand": "vite build",
+    "devUrl": "http://localhost:5174"
+  },
+  "app": {
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "title": "Coding Outside Hub",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 1024,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all"
+  }
+}

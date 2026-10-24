@@ -18,6 +18,7 @@ node_modules/
 dist/
 build/
 out/
+target/
 __pycache__/
 *.pyc
 .venv/

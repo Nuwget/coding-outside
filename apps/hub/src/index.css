@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-desk-bg: #0b0c10;
+    --color-desk-idle: #66fcb1;
+    --color-desk-working: #ffd93d;
+    --color-desk-needs_you: #ff6b6b;
+    --color-desk-done: #45aaf2;
+    --color-desk-error: #c51f1f;
+    --color-desk-offline: #454f5a;
+  }
+  body {
+    background-color: var(--color-desk-bg);
+    color: var(--color-desk-idle);
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    margin: 0;
+  }
+  #root {
+    height: 100vh;
+    width: 100vw;
+  }
+}
+
+@layer utilities {
+  .text-desert-idle { color: var(--color-desk-idle); }
+  .text-desert-working { color: var(--color-desk-working); }
+  .text-desert-needs_you { color: var(--color-desk-needs_you); }
+  .text-desert-done { color: var(--color-desk-done); }
+  .text-desert-error { color: var(--color-desk-error); }
+  .text-desert-offline { color: var(--color-desk-offline); }
+  .bg-desert-idle { background-color: var(--color-desk-idle); }
+  .bg-desert-working { background-color: var(--color-desk-working); }
+  .bg-desert-needs_you { background-color: var(--color-desk-needs_you); }
+  .bg-desert-done { background-color: var(--color-desk-done); }
+  .bg-desert-error { background-color: var(--color-desk-error); }
+  .bg-desert-offline { background-color: var(--color-desk-offline); }
+}
