@@ -1,7 +1,6 @@
 import React from "react";
 import { Session } from "@coding-outside/protocol";
 import { StatusDot, ToolIcon } from "./ui";
-import { useDeskStore } from "../store";
 
 interface SessionCardProps {
   session: Session;

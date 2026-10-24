@@ -43,4 +43,4 @@ export const ModeSwitcher: React.FC = () => {
       ))}
     </div>
   );
->;
+};

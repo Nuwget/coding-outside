@@ -1,14 +1,10 @@
 import React, { useCallback } from "react";
-import { Session, SessionStatus, Permission } from "@coding-outside/protocol";
 import { useDeskStore } from "./store";
 import { SessionGrid } from "./components/SessionGrid";
 import { PermissionCard } from "./components/PermissionCard";
-import { LimitsPanel } from "./components/LimitsPanel";
 import { Pet } from "./components/Pet";
 import { ModeSwitcher } from "./components/ModeSwitcher";
 import { StatusDot } from "./components/ui";
-
-type Mode = SessionStatus | "needs_you";
 
 function formatTime(ts: number) {
   return new Date(ts).toLocaleTimeString("pt-BR", {
@@ -17,18 +13,12 @@ function formatTime(ts: number) {
   });
 }
 
-function pluralize(n: number, one: string, other: string) {
-  return `${n} ${n === 1 ? one : other}`;
-}
-
 export default function App() {
   const {
     mode,
     sessions,
     selectedSessionId,
-    limits,
     pendingPermission,
-    setMode,
     selectSession,
     resolvePermission,
     togglePermissionSim,
@@ -181,7 +171,7 @@ export default function App() {
         {pending && (
           <div className="absolute inset-0 z-20 flex items-center justify-center bg-desert-bg/90 backdrop-blur-sm p-2">
             <PermissionCard
-              sessionId={selectedSessionId ?? pending.sessionId}
+              sessionId={selectedSessionId ?? ""}
               permission={pending}
               onResolve={handleResolve}
             />

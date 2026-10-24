@@ -131,7 +131,6 @@ export const useDeskStore = create<DeskState>((set) => ({
 
   setMode: (mode, payload) => {
     set({ mode });
-    // eslint-disable-next-line no-console
     console.log("[desk-sim] mode.set", mode, payload);
   },
 

@@ -25,7 +25,7 @@ interface ToolIconProps {
   size?: number;
 }
 
-export const ToolIcon: React.FC<ToolIconProps> = ({ tool, size = 16 }) => {
+export const ToolIcon: React.FC<ToolIconProps> = ({ tool, size: _size = 16 }) => {
   const color = TOOL_COLORS[tool];
   return (
     <span

@@ -5,11 +5,23 @@
 @layer base {
   :root {
     --color-desk-bg: #0b0c10;
+    --color-desk-idle: #66fcb1;
+    --color-desk-working: #ffd93d;
+    --color-desk-needs_you: #ff6b6b;
+    --color-desk-done: #45aaf2;
+    --color-desk-error: #c51f1f;
+    --color-desk-offline: #454f5a;
   }
   body {
-    @apply bg-desktop-bg text-desert-idle font-mono antialiased selection:bg-desert-working selection:text-desert-bg;
+    background-color: var(--color-desk-bg);
+    color: var(--color-desk-idle);
+    font-family: ui-monospace, SFMono-Regular, monospace;
     margin: 0;
     overflow: hidden;
+  }
+  body::selection {
+    background-color: var(--color-desk-working);
+    color: var(--color-desk-bg);
   }
   #root {
     height: 100vh;
@@ -18,16 +30,43 @@
 }
 
 @layer utilities {
-  .text-desert-idle { color: #66fcb1; }
-  .text-desert-working { color: #ffd93d; }
-  .text-desert-needs_you { color: #ff6b6b; }
-  .text-desert-done { color: #45aaf2; }
-  .text-desert-error { color: #c51f1f; }
-  .text-desert-offline { color: #454f5a; }
-  .bg-desert-idle { background-color: #66fcb1; }
-  .bg-desert-working { background-color: #ffd93d; }
-  .bg-desert-needs_you { background-color: #ff6b6b; }
-  .bg-desert-done { background-color: #45aaf2; }
-  .bg-desert-error { background-color: #c51f1f; }
-  .bg-desert-offline { background-color: #454f5a; }
+  .text-desert-idle {
+    color: var(--color-desk-idle);
+  }
+  .text-desert-working {
+    color: var(--color-desk-working);
+  }
+  .text-desert-needs_you {
+    color: var(--color-desk-needs_you);
+  }
+  .text-desert-done {
+    color: var(--color-desk-done);
+  }
+  .text-desert-error {
+    color: var(--color-desk-error);
+  }
+  .text-desert-offline {
+    color: var(--color-desk-offline);
+  }
+  .bg-desert-idle {
+    background-color: var(--color-desk-idle);
+  }
+  .bg-desert-working {
+    background-color: var(--color-desk-working);
+  }
+  .bg-desert-needs_you {
+    background-color: var(--color-desk-needs_you);
+  }
+  .bg-desert-done {
+    background-color: var(--color-desk-done);
+  }
+  .bg-desert-error {
+    background-color: var(--color-desk-error);
+  }
+  .bg-desert-offline {
+    background-color: var(--color-desk-offline);
+  }
+  .selection-bg-desert-working\:\text-desert-bg {
+    /* handled by base layer above */
+  }
 }

@@ -2,6 +2,7 @@
   "name": "@coding-outside/desk-sim",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "description": "Desk Simulator — simula a tela do firmware ESP32 (320×240) no navegador. DEV only. Conecta no Hub como device fake (mock em M0).",
   "scripts": {
     "dev": "vite",
@@ -30,6 +31,9 @@
     "typescript": "^5.6.3",
     "eslint": "^9.17.0",
     "vitest": "^2.1.8",
-    "jsdom": "^25.0.1"
+    "jsdom": "^25.0.1",
+    "@types/node": "^22.10.2",
+    "eslint-plugin-react": "^7.37.3",
+    "typescript-eslint": "^8.22.0"
   }
 }

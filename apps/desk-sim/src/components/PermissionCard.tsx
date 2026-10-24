@@ -1,6 +1,5 @@
 import React from "react";
 import { Permission } from "@coding-outside/protocol";
-import { useDeskStore } from "../store";
 
 interface PermissionCardProps {
   sessionId: string;
@@ -53,4 +52,4 @@ export const PermissionCard: React.FC<PermissionCardProps> = ({
       </div>
     </div>
   );
->;
+};

@@ -24,4 +24,4 @@ export const Pet: React.FC<PetProps> = ({ species }) => {
       <div className="text-[10px] text-desert-idle">22:14 · 68% 5h</div>
     </div>
   );
->;
+};
