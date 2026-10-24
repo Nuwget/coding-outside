@@ -1,0 +1,35 @@
+{
+  "name": "@coding-outside/desk-sim",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Desk Simulator — simula a tela do firmware ESP32 (320×240) no navegador. DEV only. Conecta no Hub como device fake (mock em M0).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "tsc --noEmit && eslint src --ext .ts,.tsx",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@coding-outside/protocol": "workspace:*",
+    "zod": "^3.24.1",
+    "zustand": "^4.5.5",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.5"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.4.11",
+    "typescript": "^5.6.3",
+    "eslint": "^9.17.0",
+    "vitest": "^2.1.8",
+    "jsdom": "^25.0.1"
+  }
+}

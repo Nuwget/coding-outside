@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-desk-bg: #0b0c10;
+  }
+  body {
+    @apply bg-desktop-bg text-desert-idle font-mono antialiased selection:bg-desert-working selection:text-desert-bg;
+    margin: 0;
+    overflow: hidden;
+  }
+  #root {
+    height: 100vh;
+    width: 100vw;
+  }
+}
+
+@layer utilities {
+  .text-desert-idle { color: #66fcb1; }
+  .text-desert-working { color: #ffd93d; }
+  .text-desert-needs_you { color: #ff6b6b; }
+  .text-desert-done { color: #45aaf2; }
+  .text-desert-error { color: #c51f1f; }
+  .text-desert-offline { color: #454f5a; }
+  .bg-desert-idle { background-color: #66fcb1; }
+  .bg-desert-working { background-color: #ffd93d; }
+  .bg-desert-needs_you { background-color: #ff6b6b; }
+  .bg-desert-done { background-color: #45aaf2; }
+  .bg-desert-error { background-color: #c51f1f; }
+  .bg-desert-offline { background-color: #454f5a; }
+}
