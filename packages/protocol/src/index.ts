@@ -240,6 +240,17 @@ export const AppRenderEvent = z.object({
   }),
 });
 
+export const SessionEvent = z.object({
+  event: z.literal("session.event"),
+  data: z.object({
+    sessionId: z.string().uuid(),
+    ts: z.number(),
+    kind: z.enum(["tool_call", "response", "permission", "error"]),
+    payload: z.record(z.string(), z.unknown()).default({}),
+  }),
+});
+export type SessionEvent = z.infer<typeof SessionEvent>;
+
 export const HubToClientEvent = z.discriminatedUnion("event", [
   SessionUpsertEvent,
   SessionRemoveEvent,
@@ -249,6 +260,7 @@ export const HubToClientEvent = z.discriminatedUnion("event", [
   ModeSetEvent,
   PetStateEvent,
   AppRenderEvent,
+  SessionEvent,
 ]);
 export type HubToClientEvent = z.infer<typeof HubToClientEvent>;
 
